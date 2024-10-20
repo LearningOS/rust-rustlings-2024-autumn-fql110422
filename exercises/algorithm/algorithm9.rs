@@ -1,9 +1,3 @@
-/*
-	heap
-	This question requires you to implement a binary heap function
-*/
-// I AM NOT DONE
-
 use std::cmp::Ord;
 use std::default::Default;
 
@@ -23,7 +17,7 @@ where
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
             count: 0,
-            items: vec![T::default()],
+            items: vec![T::default()], // 使用默认值填充0索引
             comparator,
         }
     }
@@ -37,7 +31,26 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.count += 1;
+        if self.count >= self.items.len() {
+            self.items.push(value);
+        } else {
+            self.items[self.count] = value;
+        }
+        self.bubble_up(self.count);
+    }
+
+    fn bubble_up(&mut self, idx: usize) {
+        let mut index = idx;
+        while index > 1 {
+            let parent_index = self.parent_idx(index);
+            if (self.comparator)(&self.items[index], &self.items[parent_index]) {
+                self.items.swap(index, parent_index);
+                index = parent_index;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +70,27 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+
+        if right <= self.count && (self.comparator)(&self.items[right], &self.items[left]) {
+            right
+        } else {
+            left
+        }
+    }
+
+    fn bubble_down(&mut self, idx: usize) {
+        let mut index = idx;
+        while self.children_present(index) {
+            let child_index = self.smallest_child_idx(index);
+            if (self.comparator)(&self.items[child_index], &self.items[index]) {
+                self.items.swap(index, child_index);
+                index = child_index;
+            } else {
+                break;
+            }
+        }
     }
 }
 
@@ -84,8 +116,14 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.is_empty() {
+            return None;
+        }
+        let root = self.items[1].clone(); // 获取根元素
+        self.items[1] = self.items[self.count]; // 将最后一个元素放到根位置
+        self.count -= 1;
+        self.bubble_down(1); // 下沉
+        Some(root)
     }
 }
 
@@ -116,6 +154,7 @@ impl MaxHeap {
 #[cfg(test)]
 mod tests {
     use super::*;
+    
     #[test]
     fn test_empty_heap() {
         let mut heap = MaxHeap::new::<i32>();
