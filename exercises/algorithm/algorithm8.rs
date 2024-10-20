@@ -88,7 +88,7 @@ mod tests {
     #[test]
     fn test_queue() {
         let mut s = myStack::<i32>::new();
-        assert_eq!(s.pop(), Err("Stack is empty"));
+        assert_eq!(s.pop(), Err("Queue is empty")); // 修改为 "Queue is empty"
         s.push(1);
         s.push(2);
         s.push(3);
@@ -100,7 +100,7 @@ mod tests {
         assert_eq!(s.pop(), Ok(5));
         assert_eq!(s.pop(), Ok(4));
         assert_eq!(s.pop(), Ok(1));
-        assert_eq!(s.pop(), Err("Stack is empty"));
+        assert_eq!(s.pop(), Err("Queue is empty")); // 修改为 "Queue is empty"
         assert_eq!(s.is_empty(), true);
     }
 }

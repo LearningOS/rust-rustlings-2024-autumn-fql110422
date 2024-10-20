@@ -111,7 +111,7 @@ where
 
 impl<T> Iterator for Heap<T>
 where
-    T: Default,
+    T: Default + Clone,
 {
     type Item = T;
 
@@ -120,7 +120,7 @@ where
             return None;
         }
         let root = self.items[1].clone(); // 获取根元素
-        self.items[1] = self.items[self.count]; // 将最后一个元素放到根位置
+        self.items[1] = self.items[self.count].clone(); // 将最后一个元素放到根位置
         self.count -= 1;
         self.bubble_down(1); // 下沉
         Some(root)
